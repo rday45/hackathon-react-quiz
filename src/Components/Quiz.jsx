@@ -4,6 +4,7 @@ export default function Quiz() {
   const [questionsArray, setQuestionsArray] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [totalNumQuestions, setTotalNumQuestions] = useState(0);
 
   // Add probably a good idea to try to add error catching functionality
   function fetchQuestionData() {
@@ -15,6 +16,7 @@ export default function Quiz() {
         // ensures that undefined states are handled gracefully. Without this, i would get an error.
         if (data.results) {
           setQuestionsArray(data.results);
+          setTotalNumQuestions(data.results.length);
           setLoading(false);
         }
       });
@@ -22,7 +24,10 @@ export default function Quiz() {
 
   function nextQuestion(event) {
     event.preventDefault();
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    if (currentQuestionIndex+1 < totalNumQuestions){
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+    
   }
 
   useEffect(fetchQuestionData, []);
@@ -33,7 +38,7 @@ export default function Quiz() {
     return (
       <div className="quiz-container">
         <span className="quiz-text-container">
-          <h2>Question 1/5</h2>
+          <h2>Question {currentQuestionIndex+1}/{totalNumQuestions}</h2>
           <h3>{questionsArray[currentQuestionIndex].question}</h3>
           <ul className="answer-list">
             <li className="answer-option">
